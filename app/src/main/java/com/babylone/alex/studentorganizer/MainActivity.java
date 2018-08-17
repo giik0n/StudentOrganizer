@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         ft = getSupportFragmentManager().beginTransaction();
-        ImageView img = (ImageView)findViewById(R.id.imageView2);
+        ImageView img = findViewById(R.id.imageView2);
         img.setImageAlpha(64);
         switch (id){
             case R.id.nav_lessons:
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity
                 fab.show();
                 break;
         }ft.commit();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

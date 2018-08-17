@@ -20,6 +20,7 @@ import com.babylone.alex.studentorganizer.Classes.Homework;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.Fragments.LessonsFragment;
 import com.babylone.alex.studentorganizer.R;
+import com.tapadoo.alerter.Alerter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -86,13 +87,24 @@ public class addHomework extends AppCompatActivity {
                 calendar.set(Calendar.SECOND,0);
                 calendar.set(Calendar.MILLISECOND,0);
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                db.addHomework(new Homework(0,spinner.getSelectedItem().toString(),text.getText().toString(),df.format(calendar.getTime()),"false"));
-                    Toast.makeText(addHomework.this, getString(R.string.added), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent("singh.ajit.action.DISPLAY_NOTIFICATION");
-                intent.putExtra("Title",getString(R.string.strHomework));
-                intent.putExtra("Text",getString(R.string.homeworkTime));
-                PendingIntent broadcast = PendingIntent.getBroadcast(getApplication(),100,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),broadcast);
+                if (text.getText().length()!=0) {
+                    db.addHomework(new Homework(0, spinner.getSelectedItem().toString(), text.getText().toString(), df.format(calendar.getTime()), "false"));
+                    Alerter.create(addHomework.this)
+                            .setText(R.string.added)
+                            .setBackgroundColorRes(R.color.greenTag)
+                            .setIcon(R.drawable.ic_check_white_24dp)
+                            .show();
+                    Intent intent = new Intent("singh.ajit.action.DISPLAY_NOTIFICATION");
+                    intent.putExtra("Title", getString(R.string.strHomework));
+                    intent.putExtra("Text", getString(R.string.homeworkTime));
+                    PendingIntent broadcast = PendingIntent.getBroadcast(getApplication(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), broadcast);
+                }else{
+                    Alerter.create(addHomework.this)
+                            .setText(R.string.fillInAllTheFields)
+                            .setBackgroundColorRes(R.color.redTag)
+                            .show();
+                    }
                 }
             }
         });

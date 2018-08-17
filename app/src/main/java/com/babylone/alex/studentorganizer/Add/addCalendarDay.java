@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.babylone.alex.studentorganizer.Classes.CalendarDay;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
+import com.tapadoo.alerter.Alerter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -69,9 +70,19 @@ public class addCalendarDay extends AppCompatActivity {
                 calendar.set(Calendar.YEAR, date.getYear());
                 calendar.set(Calendar.MONTH, date.getMonth());
                 calendar.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth());
-
+                if (name.getText().length()!=0 && description.getText().length()!=0) {
                 db.addDay(new CalendarDay(0, name.getText().toString(), description.getText().toString(),format.format(calendar.getTime()),time));
-                Toast.makeText(addCalendarDay.this, getString(R.string.added), Toast.LENGTH_SHORT).show();
+                Alerter.create(addCalendarDay.this)
+                        .setText(R.string.added)
+                        .setBackgroundColorRes(R.color.greenTag)
+                        .setIcon(R.drawable.ic_check_white_24dp)
+                        .show();
+            }else{
+                    Alerter.create(addCalendarDay.this)
+                            .setText(R.string.fillInAllTheFields)
+                            .setBackgroundColorRes(R.color.redTag)
+                            .show();
+                }
             }
         });
     }

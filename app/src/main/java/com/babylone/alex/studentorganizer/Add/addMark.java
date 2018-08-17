@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.babylone.alex.studentorganizer.Classes.Mark;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
+import com.tapadoo.alerter.Alerter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -62,8 +63,13 @@ public class addMark extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                
                 db.addMark(new Mark(0, lesson.getSelectedItem().toString(), String.valueOf(mark.getValue()),df.format(calendar.getTime())));
-                Toast.makeText(addMark.this, getString(R.string.added), Toast.LENGTH_SHORT).show();
+                Alerter.create(addMark.this)
+                        .setText(R.string.added)
+                        .setBackgroundColorRes(R.color.greenTag)
+                        .setIcon(R.drawable.ic_check_white_24dp)
+                        .show();
             }
         });
     }

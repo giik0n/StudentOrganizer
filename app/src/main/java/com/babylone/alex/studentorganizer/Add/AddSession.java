@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.babylone.alex.studentorganizer.Classes.Session;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
+import com.tapadoo.alerter.Alerter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -82,8 +83,19 @@ public class AddSession extends AppCompatActivity {
                 calendar.set(Calendar.MONTH, dp.getMonth());
                 calendar.set(Calendar.YEAR, dp.getYear());
                 df = new SimpleDateFormat("yyyy-MM-dd");
+                if (lesson.getText().length()!=0 && cab.getText().length()!=0) {
                 db.addSession(new Session(0,lesson.getText().toString(), spinner.getSelectedItem().toString(),df.format(calendar.getTime()),time,cab.getText().toString()));
-                Toast.makeText(AddSession.this, getString(R.string.added) , Toast.LENGTH_SHORT).show();
+                Alerter.create(AddSession.this)
+                        .setText(R.string.added)
+                        .setBackgroundColorRes(R.color.greenTag)
+                        .setIcon(R.drawable.ic_check_white_24dp)
+                        .show();
+            }else{
+                    Alerter.create(AddSession.this)
+                            .setText(R.string.fillInAllTheFields)
+                            .setBackgroundColorRes(R.color.redTag)
+                            .show();
+                }
             }
         });
 

@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import com.babylone.alex.studentorganizer.Classes.Lesson;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
+import com.babylone.alex.studentorganizer.MainActivity;
 import com.babylone.alex.studentorganizer.R;
+import com.tapadoo.alerter.Alerter;
 
 public class addLesson extends AppCompatActivity {
     DatabaseHelper db;
@@ -67,12 +69,19 @@ public class addLesson extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (name.getText().length()==0 || cab.getText().length()==0 || position.getText().length()==0){
-                    Toast.makeText(addLesson.this, getString(R.string.fillInAllTheFields), Toast.LENGTH_SHORT).show();
+                    Alerter.create(addLesson.this)
+                            .setText(R.string.fillInAllTheFields)
+                            .setBackgroundColorRes(R.color.redTag)
+                            .show();
 
                 }else {
                     Lesson lesson = new Lesson(0,Integer.valueOf(position.getText().toString()),name.getText().toString()+" (" + spinner2.getSelectedItem() .toString()+")",spinner.getSelectedItem().toString(), variation, cab.getText().toString());
                     db.addLesson(lesson);
-                    Toast.makeText(addLesson.this, getString(R.string.added), Toast.LENGTH_SHORT).show();
+                    Alerter.create(addLesson.this)
+                            .setText(R.string.added)
+                            .setBackgroundColorRes(R.color.greenTag)
+                            .setIcon(R.drawable.ic_check_white_24dp)
+                            .show();
                 }
 
             }

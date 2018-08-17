@@ -1,0 +1,71 @@
+<resources>
+
+    <string name="title_activity_settings">Налаштування</string>
+
+    <string name="strLessons">Розклад занять</string>
+    <string name="strHomework">Домашнє завдання</string>
+    <string name="strSession">Розклад сесії</string>
+    <string name="strMarks">Успішність</string>
+    <string name="strDay">День</string>
+    <string name="strWeek">Тиждень</string>
+    <string name="strMonth">Місяць</string>
+    <string name="rememberBefore">Нагадати за</string>
+    <string name="oneDay">день</string>
+    <string name="twoDays">дня</string>
+    <string name="moreDays">днів</string>
+    <string name="oneDayBeforeVerification">день перед перевіркою</string>
+    <string name="remindAboutHomework">Нагадувати про домашне завдання</string>
+
+    <string name="beforeVerification">перед перевіркою</string>
+    <string name="add">Додати</string>
+    <string name="name">Назва</string>
+    <string name="about">Опис</string>
+    <string name="lesson">Пара</string>
+    <string name="numerator">Тиждень 1</string>
+    <string name="denominator">Тиждень 2</string>
+    <string name="position">Позиція</string>
+    <string name="classroom">Кабінет</string>
+    <string name="monday">Понеділок</string>
+    <string name="tuesday">Вівторок</string>
+    <string name="wednesday">Середа</string>
+    <string name="thursday">Четвер</string>
+    <string name="talk">Лекція</string>
+    <string name="lab">Лабораторна</string>
+    <string name="practicalWork">Практична</string>
+    <string name="added">Додано</string>
+    <string name="date">Дата</string>
+    <string name="mark">Оцінка</string>
+    <string name="homeworkTime">Час робити домашне завдання</string>
+    <string name="exam">Екзамен</string>
+    <string name="test">Залік</string>
+    <string name="reassembly">Перездача</string>
+    <string name="addNotification">Додати нагадування</string>
+    <string name="chooseTime">Оберіть час</string>
+    <string name="chooseDate">Оберіть дату</string>
+    <string name="deleting">Видалення запису</string>
+    <string name="aYouSure">Ви впевнені, що бажаєте видалити цей запис</string>
+    <string name="yes">Так</string>
+    <string name="nope">Ні</string>
+    <string name="event">Подія</string>
+    <string name="lessons">Пари</string>
+    <string name="type">Тип</string>
+    <string name="deleteDone">Видалити готові</string>
+    <string name="planner">Планувальник</string>
+    <string name="friday">П\'ятниця</string>
+    <string name="time">Час</string>
+    <string name="currentDate">Сьогодні</string>
+
+    <string name="firstAddLessons">Спочатку додайте уроки</string>
+    <string name="choose">Обрати</string>
+    <string name="calendar">Календар</string>
+    <string name="fillInAllTheFields">Заповніть усі поля</string>
+    <string name="firstAddTheExams">Спочатку додайте екзамени</string>
+    <string name="tags">Мітки</string>
+    <string name="red">Червоний</string>
+    <string name="orange">Помаранчевий</string>
+    <string name="yellow">Жовтий</string>
+    <string name="green">Зелений</string>
+    <string name="blue">Блакитний</string>
+    <string name="purple">Фіолетовий</string>
+    <string name="grey">Сірий</string>
+</resources>

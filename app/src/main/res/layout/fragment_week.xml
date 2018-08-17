@@ -1,0 +1,49 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.babylone.alex.studentorganizer.Fragments.CalendarFragments.WeekFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/weekBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/weekForward"
+            app:layout_constraintEnd_toStartOf="@+id/weekForward"
+            app:layout_constraintTop_toTopOf="@+id/weekForward"
+            app:srcCompat="@drawable/ic_arrow_back_black_36dp" />
+
+        <com.baoyz.swipemenulistview.SwipeMenuListView
+            android:id="@+id/weekList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:dividerHeight="5dp"
+            android:divider="@drawable/shadow"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/weekForward"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/weekForward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_arrow_forward_black_36dp" />
+    </android.support.constraint.ConstraintLayout>
+</FrameLayout>

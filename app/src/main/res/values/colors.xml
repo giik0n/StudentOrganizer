@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDark">#5c48b1</color>//5c48b1
+    <color name="colorPrimary">#4868b1</color>//4868b1
+    <color name="colorAccent">#18acd3</color>//489db1
+    <color name="colorSelection">#18acd3</color>//8e7beef4
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorWhiteSemi">#80ffffff</color>
+    <color name="grey">#7b7b7c</color>
+
+    <color name="redTag">#ff6061</color>
+    <color name="orangeTag">#f9a55c</color>
+    <color name="yellowTag">#f4cd68</color>
+    <color name="greenTag">#6acc68</color>
+    <color name="blueTag">#18acd3</color>
+    <color name="purpleTag">#d189dc</color>
+    <color name="greyTag">#a5a5a7</color>
+
+    <color name="colorDark">#212121</color>
+    <color name="colorBlue">#093d6a</color>
+    <color name="colorBlueDark">#032645</color>
+    <color name="colorBlueDark2">#0f2431</color>
+
+</resources>

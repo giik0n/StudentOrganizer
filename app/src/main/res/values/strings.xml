@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name" translatable="false">Study Helper</string>
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="strLessons">Lessons</string>
+    <string name="strHomework">Homework</string>
+    <string name="strSession">Session</string>
+    <string name="strMarks">Rating</string>
+    <string name="strDay">Day</string>
+    <string name="strWeek">Week</string>
+    <string name="strMonth">Month</string>
+
+
+    <string name="oneDay">day</string>
+    <string name="twoDays">days</string>
+    <string name="moreDays">days</string>
+    <string name="rememberBefore">Remind for</string>
+    <string name="beforeVerification">before verification</string>
+    <string name="oneDayBeforeVerification">day before verification</string>
+    <string name="remindAboutHomework">Remind about homework</string>
+    <string name="add">Add</string>
+    <string name="name">Name:</string>
+    <string name="about">About:</string>
+    <string name="lesson">Lesson</string>
+    <string name="numerator">Week 1</string>
+    <string name="denominator">Week 2</string>
+    <string name="position">Position</string>
+    <string name="classroom">Classroom</string>
+    <string name="friday">Friday</string>
+    <string name="time">Time</string>
+    <string name="currentDate">CurrentDate</string>
+    <string name="choose">Choose</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="talk">Talk</string>
+    <string name="lab">Lab</string>
+    <string name="practicalWork">Practical Work</string>
+    <string name="added">Added</string>
+    <string name="date">Date</string>
+    <string name="mark">Mark</string>
+    <string name="homeworkTime">Time to homework</string>
+    <string name="exam">Exam</string>
+    <string name="test">Test</string>
+    <string name="reassembly">Reassembly</string>
+    <string name="addNotification">Add notification</string>
+    <string name="chooseTime">Choose time</string>
+    <string name="chooseDate">Choose date</string>
+    <string name="deleting">Deleting</string>
+    <string name="aYouSure">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="nope">No</string>
+    <string name="event">Event</string>
+    <string name="lessons">Lessons</string>
+    <string name="type">Type</string>
+    <string name="deleteDone">Delete done</string>
+    <string name="planner">Planner</string>
+    <string name="firstAddLessons">First Add Lessons</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="calendar">Calendar</string>
+    <string name="fillInAllTheFields">Fill in all the fields</string>
+    <string name="firstAddTheExams">First, add the exams</string>
+    <string name="tags">Tags</string>
+    <string name="red">Red</string>
+    <string name="orange">Orange</string>
+    <string name="yellow">Yellow</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+    <string name="purple">Purple</string>
+    <string name="grey">Grey</string>
+</resources>

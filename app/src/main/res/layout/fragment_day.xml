@@ -23,8 +23,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:dividerHeight="5dp"
-            android:divider="@drawable/shadow"/>
+            android:divider="@null"
+            android:dividerHeight="0dp"/>
 
         <ImageButton
             android:id="@+id/imageButton4"

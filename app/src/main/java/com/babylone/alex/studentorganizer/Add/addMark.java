@@ -63,7 +63,7 @@ public class addMark extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
                 db.addMark(new Mark(0, lesson.getSelectedItem().toString(), String.valueOf(mark.getValue()),df.format(calendar.getTime())));
                 Alerter.create(addMark.this)
                         .setText(R.string.added)

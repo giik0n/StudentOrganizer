@@ -48,20 +48,21 @@ public class addCalendarDay extends AppCompatActivity {
                 String hour = String.valueOf(tp.getCurrentHour()),
                         minute = String.valueOf(tp.getCurrentMinute());
 
-                if(tp.getCurrentHour()<10){
-                    hour = "0"+String.valueOf(tp.getCurrentHour());
-                }
 
-                if(tp.getCurrentHour()>12){
-                    hour = String.valueOf(Integer.valueOf(hour));
-                }
-
-                if(tp.getCurrentMinute()<10){
-                    minute = "0"+String.valueOf(tp.getCurrentMinute());
-                }
-                time = hour+":"+minute;
             }
         });
+        if(tp.getCurrentHour()<10){
+            hour = "0"+String.valueOf(tp.getCurrentHour());
+        }
+
+        if(tp.getCurrentHour()>12){
+            hour = String.valueOf(Integer.valueOf(hour));
+        }
+
+        if(tp.getCurrentMinute()<10){
+            minute = "0"+String.valueOf(tp.getCurrentMinute());
+        }
+        time = hour+":"+minute;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

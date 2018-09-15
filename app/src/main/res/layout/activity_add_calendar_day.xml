@@ -18,39 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <DatePicker
-                android:id="@+id/datePicker3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:calendarViewShown="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText5" />
-
-            <TimePicker
-                android:id="@+id/timePicker3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/datePicker3"
-                app:layout_constraintStart_toStartOf="@+id/datePicker3"
-                app:layout_constraintTop_toBottomOf="@+id/datePicker3" />
 
             <TextView
                 android:id="@+id/textView20"
@@ -105,8 +73,35 @@
                 app:layout_constraintStart_toEndOf="@+id/textView21"
                 app:layout_constraintTop_toBottomOf="@+id/editText4" />
 
-        </android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/chooseDateButtonCalendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/blue_background_shape"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/chooseDate"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText5" />
 
-    </ScrollView>
+    <Button
+        android:id="@+id/chooseTimeButtonCalendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/blue_background_shape"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/chooseTime"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText5" />
+
 
 </android.support.constraint.ConstraintLayout>

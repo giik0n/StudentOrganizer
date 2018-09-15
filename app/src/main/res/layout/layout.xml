@@ -17,11 +17,13 @@
 
             <TextView
                 android:id="@+id/textViewLessonSession"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:textSize="24sp"
+                app:layout_constraintEnd_toStartOf="@+id/textViewTimeSession"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,8 +31,11 @@
                 android:id="@+id/textViewTypeSession"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:hint="Type"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewLessonSession" />
 
@@ -39,30 +44,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/textViewCabSession"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewCabSession" />
+                android:hint="Time"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewDateSession"
+                app:layout_constraintEnd_toStartOf="@+id/textViewDateSession"
+                app:layout_constraintTop_toTopOf="@+id/textViewDateSession"
+                app:layout_constraintVertical_bias="0.684" />
 
             <TextView
                 android:id="@+id/textViewDateSession"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewCabSession"
+                android:layout_marginTop="8dp"
+                android:hint="Date"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewCabSession" />
+                app:layout_constraintTop_toTopOf="@+id/textViewLessonSession" />
 
             <TextView
                 android:id="@+id/textViewCabSession"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewTypeSession"
-                app:layout_constraintEnd_toStartOf="@+id/textViewDateSession"
-                app:layout_constraintTop_toTopOf="@+id/textViewLessonSession" />
+                android:layout_marginEnd="8dp"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

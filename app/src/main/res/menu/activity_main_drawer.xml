@@ -23,38 +23,38 @@
             android:icon="@mipmap/icon_calendar"
             android:title="@string/calendar" />
     </group>
+    <!--
+        <item android:title="@string/tags">
+            <menu>
+                <item
+                    android:id="@+id/nav_redTag"
+                    android:icon="@drawable/red_circle"
+                    android:title="@string/red"/>
+                <item
+                    android:id="@+id/nav_orangeTag"
+                    android:icon="@drawable/orange_circle"
+                    android:title="@string/orange"/>
+                <item
+                    android:id="@+id/nav_yellowTag"
+                    android:icon="@drawable/yellow_circle"
+                    android:title="@string/yellow"/>
+                <item
+                    android:id="@+id/nav_greenTag"
+                    android:icon="@drawable/green_circle"
+                    android:title="@string/green"/>
+                <item
+                    android:id="@+id/nav_blueTag"
+                    android:icon="@drawable/blue_circle"
+                    android:title="@string/blue"/>
+                <item
+                    android:id="@+id/nav_purpleTag"
+                    android:icon="@drawable/purple_circle"
+                    android:title="@string/purple"/>
+                <item
+                    android:id="@+id/nav_greyTag"
+                    android:icon="@drawable/grey_circle"
+                    android:title="@string/grey"/>
+            </menu>
+        </item>-->
 
-    <item android:title="@string/tags">
-        <menu>
-            <item
-                android:id="@+id/nav_redTag"
-                android:icon="@drawable/red_circle"
-                android:title="@string/red"/>
-            <item
-                android:id="@+id/nav_orangeTag"
-                android:icon="@drawable/orange_circle"
-                android:title="@string/orange"/>
-            <item
-                android:id="@+id/nav_yellowTag"
-                android:icon="@drawable/yellow_circle"
-                android:title="@string/yellow"/>
-            <item
-                android:id="@+id/nav_greenTag"
-                android:icon="@drawable/green_circle"
-                android:title="@string/green"/>
-            <item
-                android:id="@+id/nav_blueTag"
-                android:icon="@drawable/blue_circle"
-                android:title="@string/blue"/>
-            <item
-                android:id="@+id/nav_purpleTag"
-                android:icon="@drawable/purple_circle"
-                android:title="@string/purple"/>
-            <item
-                android:id="@+id/nav_greyTag"
-                android:icon="@drawable/grey_circle"
-                android:title="@string/grey"/>
-        </menu>
-    </item>
-
-</menu>
+    </menu>

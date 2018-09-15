@@ -1,5 +1,7 @@
 package com.babylone.alex.studentorganizer.Add;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,11 +24,12 @@ import java.util.Calendar;
 public class addCalendarDay extends AppCompatActivity {
 
     EditText name, description;
-    DatePicker date;
-    TimePicker tp;
+    Calendar calendar;
+    int day, month, year;
     String time;
-    Button button;
+    Button button, chooseDateButtonCalendar,chooseTimeButtonCalendar;
     DatabaseHelper db;
+    String hour, minute;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,42 +38,88 @@ public class addCalendarDay extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         name = (EditText)findViewById(R.id.editText4);
         description = (EditText)findViewById(R.id.editText5);
-        date = (DatePicker)findViewById(R.id.datePicker3);
-        tp = (TimePicker)findViewById(R.id.timePicker3);
         button = (Button)findViewById(R.id.button3);
+        chooseDateButtonCalendar = (Button)findViewById(R.id.chooseDateButtonCalendar);
+        chooseTimeButtonCalendar = (Button)findViewById(R.id.chooseTimeButtonCalendar);
         db = new DatabaseHelper(this);
-        String hour = String.valueOf(tp.getCurrentHour()),
-                minute = String.valueOf(tp.getCurrentMinute());
-        time = hour+":"+minute;
-        tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+
+        calendar = Calendar.getInstance();
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH);
+        year = calendar.get(Calendar.YEAR);
+
+
+        chooseDateButtonCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTimeChanged(TimePicker timePicker, int i, int i1) {
-                String hour = String.valueOf(tp.getCurrentHour()),
-                        minute = String.valueOf(tp.getCurrentMinute());
-
-
+            public void onClick(View view) {
+                new DatePickerDialog(addCalendarDay.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        day = i2;
+                        month = i1;
+                        year = i;
+                        String monthStr = String.valueOf(month);
+                        String dayStr = String.valueOf(day);
+                        if (i1<10){
+                            monthStr = "0"+i1+1;
+                        }
+                        if (i2<10){
+                            dayStr = "0"+i2;
+                        }
+                        chooseDateButtonCalendar.setText(year+"-"+monthStr+"-"+dayStr);
+                    }
+                },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
             }
         });
-        if(tp.getCurrentHour()<10){
-            hour = "0"+String.valueOf(tp.getCurrentHour());
+
+
+        hour = String.valueOf(calendar.get(Calendar.HOUR));
+        minute = String.valueOf(calendar.get(Calendar.MINUTE));
+
+        if(Integer.valueOf(hour)<10){
+            hour = "0"+hour;
         }
 
-        if(tp.getCurrentHour()>12){
-            hour = String.valueOf(Integer.valueOf(hour));
-        }
-
-        if(tp.getCurrentMinute()<10){
-            minute = "0"+String.valueOf(tp.getCurrentMinute());
+        if(Integer.valueOf(minute)<10){
+            minute = "0"+minute;
         }
         time = hour+":"+minute;
+
+        chooseTimeButtonCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TimePickerDialog(addCalendarDay.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        hour = String.valueOf(i);
+                        minute = String.valueOf(i1);
+                        if(Integer.valueOf(hour)<10){
+                            hour = "0"+hour;
+                        }
+
+                        if(Integer.valueOf(minute)<10){
+                            minute = "0"+minute;
+                        }
+                        time = hour+":"+minute;
+                        chooseTimeButtonCalendar.setText(time);
+                    }
+                },calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), true).show();
+            }
+        });
+
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, date.getYear());
-                calendar.set(Calendar.MONTH, date.getMonth());
-                calendar.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth());
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
                 if (name.getText().length()!=0 && description.getText().length()!=0) {
                 db.addDay(new CalendarDay(0, name.getText().toString(), description.getText().toString(),format.format(calendar.getTime()),time));
                 Alerter.create(addCalendarDay.this)

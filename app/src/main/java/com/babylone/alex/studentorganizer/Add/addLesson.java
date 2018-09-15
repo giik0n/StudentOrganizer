@@ -1,9 +1,12 @@
 package com.babylone.alex.studentorganizer.Add;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +38,8 @@ public class addLesson extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         db = new DatabaseHelper(this);
         name = (EditText)findViewById(R.id.addLessonText);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
         position = (EditText)findViewById(R.id.addLessonPosition);
         cab = (EditText)findViewById(R.id.addLessonCab);
         spinner = (Spinner)findViewById(R.id.addLessonSpinner);

@@ -1,5 +1,6 @@
 package com.babylone.alex.studentorganizer.Add;
 
+import android.app.DatePickerDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -25,12 +26,13 @@ import java.util.Calendar;
 public class addMark extends AppCompatActivity {
 
     NumberPicker mark;
-    DatePicker date;
-    Button button;
+    Button button, chooseDateButtonMark;
     SimpleDateFormat df;
     DatabaseHelper db;
     Calendar calendar;
     Spinner lesson;
+    int day, month, year;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +41,13 @@ public class addMark extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lesson = (Spinner) findViewById(R.id.spinner_add_mark);
         mark = (NumberPicker) findViewById(R.id.numberPicker);
-        date = (DatePicker) findViewById(R.id.datePicker);
         button = (Button) findViewById(R.id.button2);
+        chooseDateButtonMark = (Button) findViewById(R.id.chooseDateButtonMark);
         db = new DatabaseHelper(this);
 
         String[] lessons = db.getUniqueLessons().toArray(new String[0]);
         if(lessons.length == 0){
             Toast.makeText(this, getString(R.string.firstAddLessons), Toast.LENGTH_SHORT).show();
-
             finish();
         }else {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -56,9 +57,39 @@ public class addMark extends AppCompatActivity {
         mark.setMaxValue(5);
         mark.setMinValue(1);
         calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth());
-        calendar.set(Calendar.MONTH, date.getMonth());
-        calendar.set(Calendar.YEAR, date.getYear());
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH);
+        year = calendar.get(Calendar.YEAR);
+        chooseDateButtonMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(addMark.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        day = i2;
+                        month = i1;
+                        year = i;
+                        String monthStr = String.valueOf(month);
+                        String dayStr = String.valueOf(day);
+                        if (i1<10){
+                            monthStr = "0"+i1+1;
+                        }
+                        if (i2<10){
+                            dayStr = "0"+i2;
+                        }
+                        chooseDateButtonMark.setText(year+"-"+monthStr+"-"+dayStr);
+                    }
+                },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
+            }
+        });
+
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
         df = new SimpleDateFormat("yyyy-MM-dd");
         button.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -13,6 +13,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -27,7 +30,6 @@ public class SettingsActivity extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor editor;
     Switch switcher;
-    TimePicker tp;
     boolean notify;
     AlarmManager alarmManager;
     EditText editText;
@@ -42,13 +44,12 @@ public class SettingsActivity extends AppCompatActivity {
         switcher = (Switch) findViewById(R.id.switch1);
         alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         editText = (EditText)findViewById(R.id.editText);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         sp = getPreferences(Context.MODE_PRIVATE);
         textView7 = (TextView)findViewById(R.id.textView7);
         settings_time = (TextView)findViewById(R.id.settings_time);
         settings_time.setText(sp.getString("Time", null));
         settings_chooseTime = (Button) findViewById(R.id.settings_chooseTime);
-        //tp.setCurrentHour(Integer.valueOf(sp.getString("Time", null).split(":")[0]));
-        //tp.setCurrentMinute(Integer.valueOf(sp.getString("Time", null).split(":")[1]));
         editor = sp.edit();
         notify = Boolean.valueOf(sp.getString("Notify","false"));
         switcher.setChecked(notify);
@@ -93,29 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
                 checkSwitcher();
             }
         });
-        /*tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker timePicker, int i, int i1) {
-                String hour = String.valueOf(tp.getCurrentHour()),
-                        minute = String.valueOf(tp.getCurrentMinute());
 
-                if(tp.getCurrentHour()<10){
-                    hour = "0"+String.valueOf(tp.getCurrentHour());
-                }
-
-                if(tp.getCurrentHour()>12){
-                    hour = String.valueOf(Integer.valueOf(hour));
-                }
-
-                if(tp.getCurrentMinute()<10){
-                    minute = "0"+String.valueOf(tp.getCurrentMinute());
-                }
-
-
-                editor.putString("Time", hour+":"+minute);
-                editor.commit();
-            }
-        });*/
         settings_chooseTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

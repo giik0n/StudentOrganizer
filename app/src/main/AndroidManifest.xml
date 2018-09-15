@@ -28,12 +28,16 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Add.addLesson"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity
             android:name=".Add.addHomework"
             android:label="addHomework"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
 
         <receiver
             android:name=".AlarmReceiver"
@@ -46,19 +50,27 @@
 
         <activity android:name=".Add.AddSession"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".Add.addMark"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".Add.addMarkSession"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".SelectedChartActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
         <activity android:name=".Add.addCalendarDay"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
     </application>
 
 </manifest>

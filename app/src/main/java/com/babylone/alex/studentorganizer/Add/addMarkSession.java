@@ -1,5 +1,6 @@
 package com.babylone.alex.studentorganizer.Add;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -24,11 +25,11 @@ public class addMarkSession extends AppCompatActivity {
 
     Spinner lesson;
     EditText mark;
-    DatePicker date;
-    Button button;
+    Button button,chooseDateButtonSessionMark;
     SimpleDateFormat df;
     DatabaseHelper db;
     Calendar calendar;
+    int day, month, year;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +38,8 @@ public class addMarkSession extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lesson = (Spinner) findViewById(R.id.spinner_add_mark_session);
         mark = (EditText) findViewById(R.id.editText2);
-        date = (DatePicker) findViewById(R.id.datePicker);
         button = (Button) findViewById(R.id.button2);
+        chooseDateButtonSessionMark = (Button) findViewById(R.id.chooseDateButtonSessionMark);
         db = new DatabaseHelper(this);
 
         String[] lessons = db.getUniqueSession().toArray(new String[0]);
@@ -52,9 +53,41 @@ public class addMarkSession extends AppCompatActivity {
         }
 
         calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth());
-        calendar.set(Calendar.MONTH, date.getMonth());
-        calendar.set(Calendar.YEAR, date.getYear());
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH);
+        year = calendar.get(Calendar.YEAR);
+
+        chooseDateButtonSessionMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(addMarkSession.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        day = i2;
+                        month = i1;
+                        year = i;
+                        String monthStr = String.valueOf(month);
+                        String dayStr = String.valueOf(day);
+                        if (i1<10){
+                            monthStr = "0"+i1+1;
+                        }
+                        if (i2<10){
+                            dayStr = "0"+i2;
+                        }
+                        chooseDateButtonSessionMark.setText(year+"-"+monthStr+"-"+dayStr);
+                    }
+                },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
+            }
+        });
+
+
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
         df = new SimpleDateFormat("yyyy-MM-dd");
         button.setOnClickListener(new View.OnClickListener() {
             @Override

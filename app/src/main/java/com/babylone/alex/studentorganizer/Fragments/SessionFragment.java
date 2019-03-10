@@ -231,7 +231,7 @@ public class SessionFragment extends Fragment {
                 return false;
             }
         });
-    }
+    }  
 
     @Override
     public void onResume() {

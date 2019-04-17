@@ -5,10 +5,10 @@ package com.babylone.alex.studentorganizer.Classes;
  */
 
 public class CalendarDay {
-    int id;
+    String id;
     String name, description, date, time;
 
-    public CalendarDay(int id, String name, String description, String date, String time) {
+    public CalendarDay(String id, String name, String description, String date, String time) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -16,11 +16,11 @@ public class CalendarDay {
         this.time = time;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

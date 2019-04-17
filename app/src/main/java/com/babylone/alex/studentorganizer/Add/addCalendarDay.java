@@ -3,6 +3,7 @@ package com.babylone.alex.studentorganizer.Add;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -16,10 +17,16 @@ import android.widget.Toast;
 import com.babylone.alex.studentorganizer.Classes.CalendarDay;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tapadoo.alerter.Alerter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class addCalendarDay extends AppCompatActivity {
 
@@ -30,6 +37,9 @@ public class addCalendarDay extends AppCompatActivity {
     Button button, chooseDateButtonCalendar,chooseTimeButtonCalendar;
     DatabaseHelper db;
     String hour, minute;
+    DatabaseReference calendarRef = FirebaseDatabase.getInstance().getReference().child("Calendar");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +71,7 @@ public class addCalendarDay extends AppCompatActivity {
                         String monthStr = String.valueOf(month);
                         String dayStr = String.valueOf(day);
                         if (i1<10){
-                            monthStr = "0"+i1+1;
+                            monthStr = "0"+(i1+1);
                         }
                         if (i2<10){
                             dayStr = "0"+i2;
@@ -121,7 +131,26 @@ public class addCalendarDay extends AppCompatActivity {
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, day);
                 if (name.getText().length()!=0 && description.getText().length()!=0) {
-                db.addDay(new CalendarDay(0, name.getText().toString(), description.getText().toString(),format.format(calendar.getTime()),time));
+
+
+                    HashMap postMap = new HashMap();
+                    postMap.put("name", name.getText().toString());
+                    postMap.put("about", description.getText().toString());
+                    postMap.put("date", chooseDateButtonCalendar.getText().toString());
+                    postMap.put("time", chooseTimeButtonCalendar.getText().toString());
+                    String key = calendarRef.child(mAuth.getUid()).push().getKey();
+                    calendarRef.child(mAuth.getUid()).child(key).updateChildren(postMap).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if (task.isSuccessful()){
+                                Toast.makeText(addCalendarDay.this, "Added", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }else{
+                                Toast.makeText(addCalendarDay.this, "Error: "+ task.getException().toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
                 Alerter.create(addCalendarDay.this)
                         .setText(R.string.added)
                         .setBackgroundColorRes(R.color.greenTag)

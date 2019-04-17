@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.babylone.alex.studentorganizer.Add.AddSession;
@@ -24,16 +25,29 @@ import com.babylone.alex.studentorganizer.Add.addCalendarDay;
 import com.babylone.alex.studentorganizer.Add.addHomework;
 import com.babylone.alex.studentorganizer.Add.addLesson;
 import com.babylone.alex.studentorganizer.Add.addMark;
+import com.babylone.alex.studentorganizer.Classes.AppRater;
 import com.babylone.alex.studentorganizer.Fragments.CalendarFragment;
 import com.babylone.alex.studentorganizer.Fragments.CalendarFragments.DayFragment;
 import com.babylone.alex.studentorganizer.Fragments.CalendarFragments.MonthFragment;
 import com.babylone.alex.studentorganizer.Fragments.CalendarFragments.WeekFragment;
+import com.babylone.alex.studentorganizer.Fragments.ChatFragment;
 import com.babylone.alex.studentorganizer.Fragments.HomeWorkFragment;
 import com.babylone.alex.studentorganizer.Fragments.LessonsFragment;
 import com.babylone.alex.studentorganizer.Fragments.MarksFragment;
 import com.babylone.alex.studentorganizer.Fragments.SessionFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,26 +61,38 @@ public class MainActivity extends AppCompatActivity
     WeekFragment weekFragment;
     DayFragment dayFragment;
     CalendarFragment calendarFragment;
+    ChatFragment chatFragment;
     FloatingActionButton fab;
     android.support.v4.app.FragmentTransaction ft;
     String currentFragment;
     DatabaseHelper db;
-    SharedPreferences sp;
+    SharedPreferences sp, userInfo;
     SharedPreferences.Editor editor;
     NavigationView navigationView;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+    CircleImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null){
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        }else{
+            checkUserExistence();
+        }
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        AppRater.app_launched(this);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
         currentFragment = "";
         db = new DatabaseHelper(this);
         sp = getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+        userInfo = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         editor = sp.edit();
         if(!sp.contains("Notify")){
             editor.putString("Notify","true");
@@ -80,6 +106,16 @@ public class MainActivity extends AppCompatActivity
             editor.putString("Time","18:00");
             editor.commit();
         }
+        if(!sp.contains("twoWeeks")){
+            editor.putString("twoWeeks","false");
+            editor.commit();
+        }
+        if(!sp.contains("isSaturnday")){
+            editor.putString("isSaturnday","false");
+            editor.commit();
+        }
+        mAuth = FirebaseAuth.getInstance();
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         lessonsFrag = new LessonsFragment();
         homeWorkFrag = new HomeWorkFragment();
         sessionFrag = new SessionFragment();
@@ -88,7 +124,8 @@ public class MainActivity extends AppCompatActivity
         weekFragment = new WeekFragment();
         dayFragment = new DayFragment();
         calendarFragment = new CalendarFragment();
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        chatFragment = new ChatFragment();
+        fab = findViewById(R.id.fab);
         fab.hide();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,21 +133,9 @@ public class MainActivity extends AppCompatActivity
                 switch (currentFragment){
                     case "LESSONS_FRAGMENT":
                         addLesson(lessonsFrag.getNumerator());
-
                         break;
                     case "HOMEWORK_FRAGMENT":
-                        if(db.getUniqueLessons().toArray(new String[0]).length == 0){
-                            Toast.makeText(MainActivity.this, getString(R.string.firstAddLessons), Toast.LENGTH_SHORT).show();
-                            ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.container,lessonsFrag);
-                            setTitle(getString(R.string.strLessons));
-                            currentFragment = "LESSONS_FRAGMENT";
-                            ft.commit();
-                            navigationView.setCheckedItem(R.id.nav_lessons);
-                            fab.show();
-                        }else{
-                            addHomework();
-                        }
+                        addHomework();
                         break;
                     case "SESSION_FRAGMENT":
                         addSession();
@@ -135,6 +160,55 @@ public class MainActivity extends AppCompatActivity
         if(ft.isEmpty()){
             drawer.openDrawer(Gravity.START);
         }
+    }
+
+    private void checkUserExistence() {
+        try {
+            final String currentUserId = mAuth.getCurrentUser().getUid();
+            usersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.hasChild(currentUserId)){
+                        startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+                    }else {
+                        int numtries = 20;
+                        while(numtries-- != 0){
+                            TextView studentsName = findViewById(R.id.studentsName);
+                            TextView studentsGroup = findViewById(R.id.studentsGroup);
+                            profileImage = findViewById(R.id.profileImageNav);
+                        try {
+                            if (dataSnapshot.child(currentUserId).hasChild("profileimage")) {
+                                String image = dataSnapshot.child(currentUserId).child("profileimage").getValue().toString();
+                                    Picasso.get().load(image).into(profileImage);
+                            }
+                            if (dataSnapshot.child(currentUserId).hasChild("last_name") && dataSnapshot.child(mAuth.getUid()).hasChild("first_name")) {
+                                    studentsName.setText(dataSnapshot.child(currentUserId).child("last_name").getValue().toString() + " " + dataSnapshot.child(currentUserId).child("first_name").getValue().toString());
+                            }
+                            if (dataSnapshot.child(currentUserId).hasChild("group")) {
+                                    studentsGroup.setText(dataSnapshot.child(currentUserId).child("group").getValue().toString().replaceAll("_", " "));
+                            }
+                            break;
+                        }catch (IllegalArgumentException | NullPointerException e){
+                            e.printStackTrace();
+                            continue;
+                            }
+                        }
+                        editor = userInfo.edit();
+                        editor.putString("userGroup",dataSnapshot.child(currentUserId).child("group").getValue().toString());
+                        editor.putString("userRole",dataSnapshot.child(currentUserId).child("role").getValue().toString());
+                        editor.commit();
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -150,7 +224,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -162,6 +235,12 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this,SettingsActivity.class);
             startActivity(intent);
+        }else if (id == R.id.action_logout){
+            mAuth.signOut();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }else if (id == R.id.action_profile){
+            startActivity(new Intent(this, ProfileActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -178,30 +257,44 @@ public class MainActivity extends AppCompatActivity
                 ft.replace(R.id.container,lessonsFrag);
                 setTitle(getString(R.string.strLessons));
                 currentFragment = "LESSONS_FRAGMENT";
-                fab.show();
+                if (userInfo.getString("userRole","student").equals("teacher")){
+                    fab.show();
+                }else fab.hide();
                 break;
             case R.id.nav_homework:
                 ft.replace(R.id.container,homeWorkFrag);
                 setTitle(getString(R.string.strHomework));
                 currentFragment = "HOMEWORK_FRAGMENT";
-                fab.show();
+                if (userInfo.getString("userRole","student").equals("teacher")){
+                    fab.show();
+                }else fab.hide();
                 break;
             case R.id.nav_session:
                 ft.replace(R.id.container,sessionFrag);
                 setTitle(getString(R.string.strSession));
                 currentFragment = "SESSION_FRAGMENT";
-                fab.show();
+                if (userInfo.getString("userRole","student").equals("teacher")){
+                    fab.show();
+                }else fab.hide();
                 break;
-            case R.id.nav_marks:
+            /*case R.id.nav_marks:
                 ft.replace(R.id.container,marksFrag);
                 setTitle(getString(R.string.strMarks));
                 currentFragment = "MARKS_FRAGMENT";
                 fab.hide();
-                break;
+                break;*/
             case R.id.nav_calendar:
                 ft.replace(R.id.container,calendarFragment);
                 currentFragment = "CALENDAR_FRAGMENT";
-                fab.show();
+                if (userInfo.getString("userRole","student").equals("teacher")){
+                    fab.show();
+                }else fab.hide();
+                break;
+            case R.id.nav_chat:
+                ft.replace(R.id.container,chatFragment);
+                currentFragment = "CHAT_FRAGMENT";
+                setTitle("Chat");
+                fab.hide();
                 break;
         }ft.commit();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -229,5 +322,9 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, addCalendarDay.class);
         startActivity(intent);
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkUserExistence();
+    }
 }

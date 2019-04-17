@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/grp1" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_lessons"
             android:icon="@mipmap/icon_lessons"
@@ -15,46 +15,26 @@
             android:icon="@mipmap/icon_session"
             android:title="@string/strSession" />
         <item
+            android:id="@+id/nav_library"
+            android:icon="@mipmap/icon_library"
+            android:title="@string/library" />
+        <!--
+        <item
             android:id="@+id/nav_marks"
             android:icon="@mipmap/icon_marks"
             android:title="@string/strMarks" />
+            -->
+
+    </group>
+    <group android:id="@+id/grp2" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_chat"
+            android:icon="@mipmap/icon_chat"
+            android:title="@string/chat" />
+
         <item
             android:id="@+id/nav_calendar"
             android:icon="@mipmap/icon_calendar"
             android:title="@string/calendar" />
     </group>
-    <!--
-        <item android:title="@string/tags">
-            <menu>
-                <item
-                    android:id="@+id/nav_redTag"
-                    android:icon="@drawable/red_circle"
-                    android:title="@string/red"/>
-                <item
-                    android:id="@+id/nav_orangeTag"
-                    android:icon="@drawable/orange_circle"
-                    android:title="@string/orange"/>
-                <item
-                    android:id="@+id/nav_yellowTag"
-                    android:icon="@drawable/yellow_circle"
-                    android:title="@string/yellow"/>
-                <item
-                    android:id="@+id/nav_greenTag"
-                    android:icon="@drawable/green_circle"
-                    android:title="@string/green"/>
-                <item
-                    android:id="@+id/nav_blueTag"
-                    android:icon="@drawable/blue_circle"
-                    android:title="@string/blue"/>
-                <item
-                    android:id="@+id/nav_purpleTag"
-                    android:icon="@drawable/purple_circle"
-                    android:title="@string/purple"/>
-                <item
-                    android:id="@+id/nav_greyTag"
-                    android:icon="@drawable/grey_circle"
-                    android:title="@string/grey"/>
-            </menu>
-        </item>-->
-
     </menu>

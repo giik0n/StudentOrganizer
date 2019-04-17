@@ -2,6 +2,7 @@ package com.babylone.alex.studentorganizer.Add;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,11 +18,17 @@ import android.widget.Toast;
 import com.babylone.alex.studentorganizer.Classes.Session;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tapadoo.alerter.Alerter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class AddSession extends AppCompatActivity {
 
@@ -35,6 +42,9 @@ public class AddSession extends AppCompatActivity {
     int day, month, year;
     Calendar calendar;
     String hour, minute;
+    Spinner faculty, branch, course;
+    DatabaseReference sessionRef = FirebaseDatabase.getInstance().getReference().child("Session");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +52,28 @@ public class AddSession extends AppCompatActivity {
         setContentView(R.layout.activity_add_session);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        spinner = (Spinner) findViewById(R.id.spinnerAddSesType);
-        cab = (EditText) findViewById(R.id.editTextAddSesCab);
-        lesson = (EditText) findViewById(R.id.editTextAddSesLesson);
+        spinner = findViewById(R.id.spinnerAddSesType);
+        cab = findViewById(R.id.editTextAddSesCab);
+        lesson = findViewById(R.id.editTextAddSesLesson);
 
-        button = (Button) findViewById(R.id.button);
-        chooseDateButton = (Button) findViewById(R.id.chooseDateButton);
-        chooseTimeButton = (Button) findViewById(R.id.chooseTimeButton);
+        button = findViewById(R.id.button);
+        chooseDateButton = findViewById(R.id.chooseDateButton);
+        chooseTimeButton = findViewById(R.id.chooseTimeButton);
+        faculty = findViewById(R.id.facultySpinner);
+        branch = findViewById(R.id.branchSpinner);
+        course = findViewById(R.id.courseSpiner);
         calendar = Calendar.getInstance();
         day = calendar.get(Calendar.DAY_OF_MONTH);
         month = calendar.get(Calendar.MONTH);
         year = calendar.get(Calendar.YEAR);
+
+        String[] faculties = {"IT"};
+        String[] branches = {"PI","KN","ST"};
+        String[] courses = {"1","2","3","4","5"};
+
+        faculty.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, faculties));
+        branch.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, branches));
+        course.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, courses));
 
         chooseDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +87,7 @@ public class AddSession extends AppCompatActivity {
                         String monthStr = String.valueOf(month);
                         String dayStr = String.valueOf(day);
                         if (i1<10){
-                            monthStr = "0"+i1+1;
+                            monthStr = "0"+(i1+1);
                         }
                         if (i2<10){
                             dayStr = "0"+i2;
@@ -129,13 +150,14 @@ public class AddSession extends AppCompatActivity {
                 calendar.set(Calendar.YEAR, year);
                 df = new SimpleDateFormat("yyyy-MM-dd");
                 if (lesson.getText().length()!=0 && cab.getText().length()!=0) {
-                db.addSession(new Session(0,lesson.getText().toString(), spinner.getSelectedItem().toString(),df.format(calendar.getTime()),time,cab.getText().toString()));
-                Alerter.create(AddSession.this)
-                        .setText(R.string.added)
-                        .setBackgroundColorRes(R.color.greenTag)
-                        .setIcon(R.drawable.ic_check_white_24dp)
-                        .show();
-            }else{
+                    //db.addSession(new Session("",lesson.getText().toString(), spinner.getSelectedItem().toString(),df.format(calendar.getTime()),time,cab.getText().toString()));
+                    addSession();
+                    Alerter.create(AddSession.this)
+                            .setText(R.string.added)
+                            .setBackgroundColorRes(R.color.greenTag)
+                            .setIcon(R.drawable.ic_check_white_24dp)
+                            .show();
+                }else{
                     Alerter.create(AddSession.this)
                             .setText(R.string.fillInAllTheFields)
                             .setBackgroundColorRes(R.color.redTag)
@@ -152,5 +174,28 @@ public class AddSession extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addSession(){
+        HashMap postMap = new HashMap();
+        postMap.put("lesson", lesson.getText().toString());
+        postMap.put("type", spinner.getSelectedItem().toString());
+        postMap.put("date", df.format(calendar.getTime()));
+        postMap.put("time", time);
+        postMap.put("classroom", cab.getText().toString());
+        postMap.put("group", faculty.getSelectedItem().toString()+"_"+branch.getSelectedItem().toString()+"_"+course.getSelectedItem().toString());
+        String key = sessionRef.child(mAuth.getUid()).push().getKey();
+        sessionRef.child(key).updateChildren(postMap).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {// додаємо рецепт в бд
+                if (task.isSuccessful()){
+                    Toast.makeText(AddSession.this, "Added", Toast.LENGTH_SHORT).show();
+                    finish();
+                }else{
+                    Toast.makeText(AddSession.this, "Error: "+ task.getException().toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 }

@@ -7,7 +7,6 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -16,13 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.babylone.alex.studentorganizer.Adapters.CalendarAdapter;
-import com.babylone.alex.studentorganizer.ChangeInterface;
 import com.babylone.alex.studentorganizer.Classes.CalendarDay;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
@@ -32,13 +29,21 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -47,11 +52,15 @@ public class MonthFragment extends Fragment{
     public MonthFragment() {
     }
     CompactCalendarView compactCalendar;
-    List<CalendarDay> data = new ArrayList<>();
+    List<CalendarDay> arrayList = new ArrayList<>();
     DatabaseHelper db;
     SwipeMenuListView list;
     String lastDate;
     SimpleDateFormat format, month;
+    CalendarAdapter adapter;
+    DatabaseReference calendarRef = FirebaseDatabase.getInstance().getReference().child("Calendar");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    ArrayList<String> days;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +72,7 @@ public class MonthFragment extends Fragment{
         month = new SimpleDateFormat("MMMM");
         lastDate = format.format(Calendar.getInstance().getTime());
         list = (SwipeMenuListView) view.findViewById(R.id.listView);
-
+        days = new ArrayList<>();
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
@@ -75,14 +84,53 @@ public class MonthFragment extends Fragment{
                 getActivity().setTitle(month.format(firstDayOfNewMonth));
             }
         });
+
+        calendarRef.child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                days.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()){
+                    days.add(data.child("date").getValue().toString());
+                }
+                refreshEvents();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         return view;
     }
     private void refreshData(String date) {
-        data = db.getDayByDate(date);
-        final CalendarAdapter adapter = new CalendarAdapter(getActivity(),data,false);
-        list.setAdapter(adapter);
 
+        adapter = new CalendarAdapter(getActivity(),arrayList,false);
+        calendarRef.child(mAuth.getUid()).orderByChild("date").equalTo(date).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayList.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()){
+                    arrayList.add(new CalendarDay(//додавання елементу
+                            data.getKey(),
+                            data.child("name").getValue().toString(),
+                            data.child("about").getValue().toString(),
+                            data.child("date").getValue().toString(),
+                            data.child("time").getValue().toString()));
+                    days.add(data.child("date").getValue().toString());
+                }
+                list.setAdapter(adapter);
+                refreshEvents();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        list.setAdapter(adapter);
         refreshEvents();
+
+
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -212,7 +260,7 @@ public class MonthFragment extends Fragment{
                                     Toast.makeText(getActivity(), R.string.added, Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent("singh.ajit.action.DISPLAY_NOTIFICATION");
                                     intent.putExtra("Title","Notification");
-                                    intent.putExtra("Text",data.get(position).getName());
+                                    intent.putExtra("Text", arrayList.get(position).getName());
                                     PendingIntent broadcast = PendingIntent.getBroadcast(getActivity(),100,intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),broadcast);
                                 }
@@ -223,13 +271,13 @@ public class MonthFragment extends Fragment{
                         new AlertDialog.Builder(getActivity())
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle(getString(R.string.deleting))
-                                .setMessage(((CalendarDay)data.get(position)).getName()+"\n"+getString(R.string.aYouSure))
+                                .setMessage(((CalendarDay) arrayList.get(position)).getName()+"\n"+getString(R.string.aYouSure))
                                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
                                 {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        db.deleteDay((CalendarDay)data.get(position));
-                                        data.remove(position);
+                                        calendarRef.child(mAuth.getUid()).child(arrayList.get(position).getId()).removeValue();
+                                        arrayList.remove(position);
                                         list.setAdapter(adapter);
                                         refreshEvents();
                                     }
@@ -244,13 +292,14 @@ public class MonthFragment extends Fragment{
     }
 
     void refreshEvents(){
-        ArrayList<String> days = db.getUniqueDays();
+        Set<String> uniqueDays = new HashSet<String>(days);
+        ArrayList<String> unique = new ArrayList<>(uniqueDays);
         Calendar calendar = Calendar.getInstance();
 
         compactCalendar.removeAllEvents();
-        for (int i =0; i<days.size();i++){
+        for (int i =0; i<unique.size();i++){
             try {
-                calendar.setTime(format.parse(days.get(i)));
+                calendar.setTime(format.parse(unique.get(i)));
                 List<Event> events = compactCalendar.getEvents(calendar.getTimeInMillis());
                 if(events.size()==0) {
                     Event ev1 = new Event(Color.GREEN, calendar.getTimeInMillis(), getString(R.string.event));

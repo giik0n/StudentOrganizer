@@ -5,10 +5,10 @@ package com.babylone.alex.studentorganizer.Classes;
  */
 
 public class Homework {
-    int id;
+    String id;
     String lesson, description, date, isDone;
 
-    public Homework(int id, String lesson, String description, String date, String isDone) {
+    public Homework(String id, String lesson, String description, String date, String isDone) {
         this.id = id;
         this.lesson = lesson;
         this.description = description;
@@ -16,11 +16,11 @@ public class Homework {
         this.isDone = isDone;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

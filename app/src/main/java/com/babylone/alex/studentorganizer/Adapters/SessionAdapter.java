@@ -28,7 +28,7 @@ public class SessionAdapter extends BaseAdapter {
     LayoutInflater inflater;
     DatabaseHelper db;
     TextView lesson, date, type, time, classroom;
-    int id;
+    String id;
 
     public SessionAdapter(Activity activity, List<Session> list) {
         this.activity = activity;

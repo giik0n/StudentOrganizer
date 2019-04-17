@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "377213479093",
+    "firebase_url": "https://studentorganizer-9e4f7.firebaseio.com",
+    "project_id": "studentorganizer-9e4f7",
+    "storage_bucket": "studentorganizer-9e4f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377213479093:android:acda4751c1a91fc2",
+        "android_client_info": {
+          "package_name": "com.babylone.alex.studentorganizer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "377213479093-81tmocdvmo7rdlpca7leslpkhai9jop9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.babylone.alex.studentorganizer",
+            "certificate_hash": "e5d69cd4105fee19d100789960f0e818646cf8d2"
+          }
+        },
+        {
+          "client_id": "377213479093-amnnu43j7kbo65m3potkf911hs2nlfjj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4ASmWqJ1lvQXH-23frbDD4kyzuIjA3LE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "377213479093-amnnu43j7kbo65m3potkf911hs2nlfjj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

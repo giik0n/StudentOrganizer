@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Study Helper</string>
+    <string name="app_name" translatable="false">uAssistant</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -38,7 +38,7 @@
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
     <string name="thursday">Thursday</string>
-    <string name="talk">Talk</string>
+    <string name="talk">Lection</string>
     <string name="lab">Lab</string>
     <string name="practicalWork">Practical Work</string>
     <string name="added">Added</string>
@@ -74,4 +74,15 @@
     <string name="blue">Blue</string>
     <string name="purple">Purple</string>
     <string name="grey">Grey</string>
+    <string name="interfaceStr">Interface</string>
+    <string name="isSaturnday">Saturday</string>
+    <string name="twoWeeks">Two weeks</string>
+    <string name="passwordsAreNotSame">Passwords are not same</string>
+    <string name="passwordTooShortMustBe8AtLeast">Password too short must be 8 at least</string>
+    <string name="library">Library</string>
+    <string name="chat">Chat</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

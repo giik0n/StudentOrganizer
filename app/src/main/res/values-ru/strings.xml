@@ -68,4 +68,11 @@
     <string name="blue">Голубой</string>
     <string name="purple">Фиолетовый</string>
     <string name="grey">Серый</string>
+    <string name="interfaceStr">Интерфейс</string>
+    <string name="isSaturnday">Суббота</string>
+    <string name="twoWeeks">Две недели</string>
+    <string name="passwordsAreNotSame">Пароли разные</string>
+    <string name="passwordTooShortMustBe8AtLeast">Пароль занадто короткий</string>
+    <string name="library">Книги</string>
+    <string name="chat">Чат</string>
 </resources>

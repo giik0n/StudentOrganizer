@@ -31,7 +31,7 @@ public class CalendarAdapter extends BaseAdapter {
     TextView name, time, date, description;
     Boolean show = false;
 
-    int id;
+    String id;
     public CalendarAdapter(Activity activity, List<CalendarDay> list, boolean show) {
         this.activity = activity;
         this.list = list;

@@ -2,8 +2,8 @@
 <resources>
     <color name="colorPrimaryDark">#5c48b1</color>//5c48b1
     <color name="colorPrimary">#4868b1</color>//4868b1
-    <color name="colorAccent">#18acd3</color>//489db1
-    <color name="colorSelection">#18acd3</color>//8e7beef4
+    <color name="colorAccent">#18acd3</color>//18acd3
+    <color name="colorSelection">#18acd3</color>//18acd3
     <color name="colorWhite">#ffffff</color>
     <color name="colorWhiteSemi">#80ffffff</color>
     <color name="grey">#7b7b7c</color>

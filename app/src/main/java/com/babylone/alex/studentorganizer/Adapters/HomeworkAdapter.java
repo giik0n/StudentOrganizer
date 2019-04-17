@@ -16,18 +16,13 @@ import com.babylone.alex.studentorganizer.R;
 
 import java.util.List;
 
-/**
- * Created by Alex on 17.03.2018.
- */
-
 public class HomeworkAdapter extends BaseAdapter {
     Activity activity;
     List<Homework>list;
     LayoutInflater inflater;
     DatabaseHelper db;
     TextView lesson, date, descripion;
-    CheckBox checkBox;
-    int id;
+    String id;
 
     public HomeworkAdapter(Activity activity, List<Homework> list) {
         this.activity = activity;
@@ -57,20 +52,10 @@ public class HomeworkAdapter extends BaseAdapter {
         lesson = (TextView) view.findViewById(R.id.textView3);
         date = (TextView) view.findViewById(R.id.textView4);
         descripion = (TextView) view.findViewById(R.id.textView5);
-        checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         lesson.setText(list.get(i).getLesson());
         date.setText(list.get(i).getDate());
         descripion.setText(list.get(i).getDescription());
-        checkBox.setChecked(Boolean.valueOf(list.get(i).getIsDone()));
         id = list.get(i).getId();
-
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                list.get(i).setIsDone(String.valueOf(b));
-                db.updateHomeworkDone(new Homework(list.get(i).getId() ,list.get(i).getLesson(),list.get(i).getDescription(),list.get(i).getDate(),list.get(i).getIsDone()));
-            }
-        });
         return view;
     }
 }

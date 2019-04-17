@@ -6,10 +6,10 @@ package com.babylone.alex.studentorganizer.Classes;
 
 public class Session {
 
-    int id;
+    String id;
     String date, lesson, time, classroom, type;
 
-    public Session(int id, String lesson,String type, String date, String time, String classroom ) {
+    public Session(String id, String lesson,String type, String date, String time, String classroom ) {
         this.id = id;
         this.date = date;
         this.lesson = lesson;
@@ -18,11 +18,11 @@ public class Session {
         this.type = type;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

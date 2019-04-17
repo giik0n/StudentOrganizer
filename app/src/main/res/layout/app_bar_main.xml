@@ -30,6 +30,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:scaleType="center"
         android:src="@mipmap/ic_add_white"
-        app:backgroundTint="@color/blueTag" />
+        app:backgroundTint="@color/colorAccent" />
 
 </android.support.design.widget.CoordinatorLayout>

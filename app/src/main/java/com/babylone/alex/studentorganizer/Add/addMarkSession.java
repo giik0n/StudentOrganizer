@@ -69,7 +69,7 @@ public class addMarkSession extends AppCompatActivity {
                         String monthStr = String.valueOf(month);
                         String dayStr = String.valueOf(day);
                         if (i1<10){
-                            monthStr = "0"+i1+1;
+                            monthStr = "0"+(i1+1);
                         }
                         if (i2<10){
                             dayStr = "0"+i2;

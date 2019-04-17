@@ -29,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     SharedPreferences sp;
     SharedPreferences.Editor editor;
-    Switch switcher;
+    Switch switcher, saturndaySwitcher, twoWeeksSwitcher;
     boolean notify;
     AlarmManager alarmManager;
     EditText editText;
@@ -42,6 +42,8 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         switcher = (Switch) findViewById(R.id.switch1);
+        saturndaySwitcher = (Switch) findViewById(R.id.switch2);
+        twoWeeksSwitcher = (Switch) findViewById(R.id.switch3);
         alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         editText = (EditText)findViewById(R.id.editText);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -53,6 +55,8 @@ public class SettingsActivity extends AppCompatActivity {
         editor = sp.edit();
         notify = Boolean.valueOf(sp.getString("Notify","false"));
         switcher.setChecked(notify);
+        saturndaySwitcher.setChecked(Boolean.valueOf(sp.getString("isSaturnday","false")));
+        twoWeeksSwitcher.setChecked(Boolean.valueOf(sp.getString("twoWeeks","false")));
         checkSwitcher();
         editText.setText(sp.getString("Before",null));
         editText.addTextChangedListener(new TextWatcher() {
@@ -92,6 +96,22 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.commit();
                 notify = b;
                 checkSwitcher();
+            }
+        });
+
+        saturndaySwitcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                editor.putString("isSaturnday", String.valueOf(b));
+                editor.commit();
+            }
+        });
+
+        twoWeeksSwitcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                editor.putString("twoWeeks", String.valueOf(b));
+                editor.commit();
             }
         });
 

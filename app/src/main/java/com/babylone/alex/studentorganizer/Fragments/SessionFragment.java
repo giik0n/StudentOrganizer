@@ -7,9 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -18,19 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.babylone.alex.studentorganizer.Adapters.HomeworkAdapter;
 import com.babylone.alex.studentorganizer.Adapters.SessionAdapter;
-import com.babylone.alex.studentorganizer.Add.addHomework;
-import com.babylone.alex.studentorganizer.Classes.CalendarDay;
-import com.babylone.alex.studentorganizer.Classes.Homework;
-import com.babylone.alex.studentorganizer.Classes.Lesson;
+import com.babylone.alex.studentorganizer.ChangeInterface;
 import com.babylone.alex.studentorganizer.Classes.Session;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
@@ -38,25 +29,32 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+
 
 import static android.content.Context.ALARM_SERVICE;
 
 
-public class SessionFragment extends Fragment {
+public class SessionFragment extends Fragment implements ChangeInterface {
 
-    public SessionFragment() {
-    }
 
-    List<Session> data = new ArrayList<>();
+
+    ArrayList<Session> arrayList;
     DatabaseHelper db;
     SwipeMenuListView list;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference sessionRef = database.getReference().child("Session");
+    SessionAdapter adapter;
+    SharedPreferences userInfo;
+    String group;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,17 +62,41 @@ public class SessionFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_session, container, false);
         list = (SwipeMenuListView) view.findViewById(R.id.sessionList);
+        userInfo = getActivity().getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        group = userInfo.getString("userGroup","");
         db = new DatabaseHelper(getActivity());
+        arrayList = new ArrayList<>();
         refreshData();
         return view;
     }
 
     private void refreshData() {
-        data = db.getSession();
-        final SessionAdapter adapter = new SessionAdapter(getActivity(),data);
+        adapter = new SessionAdapter(getActivity(),arrayList);
+        sessionRef.orderByChild("group").equalTo(group).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayList.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()){
+                    arrayList.add(new Session(//додавання елементу
+                            data.getKey(),
+                            data.child("lesson").getValue().toString(),
+                            data.child("type").getValue().toString(),
+                            data.child("date").getValue().toString(),
+                            data.child("time").getValue().toString(),
+                            data.child("classroom").getValue().toString()));
+                }
+                list.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         list.setAdapter(adapter);
 
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
+        list.setMenuCreator(new SwipeMenuCreator() {
 
             @Override
             public void create(SwipeMenu menu) {
@@ -86,19 +108,18 @@ public class SessionFragment extends Fragment {
                     editItem.setIcon(R.mipmap.ic_notification_white);
                     editItem.setTitleSize(18);
                     menu.addMenuItem(editItem);
+                    if (userInfo.getString("userRole","student").equals("teacher")){
+                        SwipeMenuItem deleteItem = new SwipeMenuItem(
+                                getContext().getApplicationContext());
+                        deleteItem.setBackground(getResources().getDrawable(R.drawable.delete_button));
+                        deleteItem.setWidth(170);
+                        deleteItem.setIcon(R.mipmap.ic_delete);
+                        menu.addMenuItem(deleteItem);
+                    }
 
-                    SwipeMenuItem deleteItem = new SwipeMenuItem(
-                            getContext().getApplicationContext());
-                    deleteItem.setBackground(getResources().getDrawable(R.drawable.delete_button));
-                    deleteItem.setWidth(170);
-                    deleteItem.setIcon(R.mipmap.ic_delete);
-                    menu.addMenuItem(deleteItem);
                 }
             }
-        };
-
-        list.setMenuCreator(creator);
-
+        });
         list.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(final int position, SwipeMenu menu, int index) {
@@ -202,7 +223,7 @@ public class SessionFragment extends Fragment {
                                 Toast.makeText(getActivity(), "Додано\n"+calendar.getTime(), Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent("singh.ajit.action.DISPLAY_NOTIFICATION");
                                 intent.putExtra("Title","Session");
-                                intent.putExtra("Text",data.get(position).getLesson()+"("+data.get(position).getType()+")");
+                                intent.putExtra("Text",arrayList.get(position).getLesson()+"("+arrayList.get(position).getType()+")");
                                 PendingIntent broadcast = PendingIntent.getBroadcast(getActivity(),100,intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),broadcast);
                             }
@@ -211,16 +232,16 @@ public class SessionFragment extends Fragment {
 
                         break;
                     case 1:
+
                         new AlertDialog.Builder(getActivity())
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle(R.string.deleting)
-                                .setMessage(((Session)data.get(position)).getLesson()+"\n"+getString(R.string.aYouSure))
+                                .setMessage(((Session)arrayList.get(position)).getLesson()+"\n"+getString(R.string.aYouSure))
                                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
                                 {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        db.deleteSession((Session)data.get(position));
-                                        data.remove(position);
+                                        sessionRef.child(arrayList.get(position).getId()).removeValue();
                                         list.setAdapter(adapter);
                                     }
                                 })
@@ -240,4 +261,8 @@ public class SessionFragment extends Fragment {
     }
 
 
+    @Override
+    public void update() {
+        refreshData();
+    }
 }

@@ -1,5 +1,6 @@
 package com.babylone.alex.studentorganizer;
 
+import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -7,13 +8,22 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.widget.Toast;
 
+import com.babylone.alex.studentorganizer.Adapters.SessionAdapter;
 import com.babylone.alex.studentorganizer.Classes.CalendarDay;
 import com.babylone.alex.studentorganizer.Classes.Homework;
 import com.babylone.alex.studentorganizer.Classes.Lesson;
 import com.babylone.alex.studentorganizer.Classes.Mark;
 import com.babylone.alex.studentorganizer.Classes.PieObject;
 import com.babylone.alex.studentorganizer.Classes.Session;
+import com.babylone.alex.studentorganizer.Fragments.SessionFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +55,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     Context context;
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference sessionRef = database.getReference().child("session");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -101,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 Lesson lesson = new Lesson(
-                        cursor.getInt(0),
+                        cursor.getString(0),
                         cursor.getInt(1),
                         cursor.getString(2),
                         cursor.getString(3),
@@ -148,7 +161,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 Homework homework = new Homework(
-                        cursor.getInt(0),
+                        cursor.getString(0),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
@@ -182,7 +195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 Session session = new Session(
-                        cursor.getInt(0),
+                        cursor.getString(0),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
@@ -288,7 +301,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 CalendarDay day = new CalendarDay(
-                        cursor.getInt(0),
+                        cursor.getString(0),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
@@ -306,7 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 CalendarDay day = new CalendarDay(
-                        cursor.getInt(0),
+                        cursor.getString(0),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
@@ -349,5 +362,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_HOMEWORK,KEY_ID+" =?",new String[]{String.valueOf(homework.getId())});
         db.close();
+    }
+
+    public ArrayList<Session> getSessionFromFirebase(final SessionFragment f){
+        final ArrayList<Session> arrayList = new ArrayList<>();
+        sessionRef.child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayList.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()){
+                    arrayList.add(new Session(//додавання елементу
+                            data.getKey().toString(),
+                            data.child("lesson").getValue().toString(),
+                            data.child("type").getValue().toString(),
+                            data.child("date").getValue().toString(),
+                            data.child("time").getValue().toString(),
+                            data.child("classroom").getValue().toString()));
+                    f.update();
+                    Toast.makeText(f.getContext(), "Loaded", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return arrayList;
     }
 }

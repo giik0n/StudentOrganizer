@@ -4,41 +4,41 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.babylone.alex.studentorganizer.Adapters.CalendarAdapter;
 import com.babylone.alex.studentorganizer.Classes.CalendarDay;
-import com.babylone.alex.studentorganizer.Classes.Lesson;
 import com.babylone.alex.studentorganizer.DatabaseHelper;
 import com.babylone.alex.studentorganizer.R;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -51,7 +51,14 @@ public class WeekFragment extends Fragment {
     SimpleDateFormat format, day;
     DatabaseHelper db;
     SwipeMenuListView list;
-    List<CalendarDay> data = new ArrayList<>();
+    List<CalendarDay> arrayList = new ArrayList<>();
+    DatabaseReference calendarRef = FirebaseDatabase.getInstance().getReference().child("Calendar");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    CalendarAdapter adapter;
+    SimpleDateFormat sdf;
+    Date currentDate;
+    Date date01;
+    Date date02;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,14 +107,50 @@ public class WeekFragment extends Fragment {
     }
 
     void refresh(){
-        String date1 = format.format(calendar.getTime());
+        final String date1 = format.format(calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH,7);
-        String date2 = format.format(calendar.getTime());
+        final String date2 = format.format(calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH,-7);
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date01 = sdf.parse(date1);
+            date02 = sdf.parse(date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        adapter = new CalendarAdapter(getActivity(), arrayList,true);
 
+        calendarRef.child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayList.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()){
 
-        data = db.getDayBetween(date1, date2);
-        final CalendarAdapter adapter = new CalendarAdapter(getActivity(),data,true);
+                    try {
+                        currentDate = sdf.parse(data.child("date").getValue().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (date01.before(currentDate) && date02.after(currentDate)) {
+                            arrayList.add(new CalendarDay(
+                                    data.getKey(),
+                                    data.child("name").getValue().toString(),
+                                    data.child("about").getValue().toString(),
+                                    data.child("date").getValue().toString(),
+                                    data.child("time").getValue().toString()));
+                        }
+
+                }
+                list.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         list.setAdapter(adapter);
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -250,7 +293,7 @@ public class WeekFragment extends Fragment {
                                     Toast.makeText(getActivity(), getString(R.string.added), Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent("singh.ajit.action.DISPLAY_NOTIFICATION");
                                     intent.putExtra("Title","Notification");
-                                    intent.putExtra("Text",data.get(position).getName());
+                                    intent.putExtra("Text", arrayList.get(position).getName());
                                     PendingIntent broadcast = PendingIntent.getBroadcast(getActivity(),100,intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),broadcast);
                                 }
@@ -261,13 +304,13 @@ public class WeekFragment extends Fragment {
                         new AlertDialog.Builder(getActivity())
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle(getString(R.string.deleting))
-                                .setMessage(((CalendarDay)data.get(position)).getName()+"\n"+getString(R.string.aYouSure))
+                                .setMessage(((CalendarDay) arrayList.get(position)).getName()+"\n"+getString(R.string.aYouSure))
                                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
                                 {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        db.deleteDay((CalendarDay)data.get(position));
-                                        data.remove(position);
+                                        calendarRef.child(mAuth.getUid()).child(arrayList.get(position).getId()).removeValue();
+                                        arrayList.remove(position);
                                         list.setAdapter(adapter);
                                     }
                                 })

@@ -1,14 +1,16 @@
 package com.babylone.alex.studentorganizer.Classes;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by Alex on 08.03.2018.
  */
 
-public class Lesson {
-    private int id, position;
-    private String name, day, variation, cab;
+public class Lesson implements Comparable<Lesson>{
+    private int position;
+    private String id, name, day, variation, cab;
 
-    public Lesson(int id, int position, String name, String day, String variation, String cab) {
+    public Lesson(String id, int position, String name, String day, String variation, String cab) {
         this.id = id;
         this.position = position;
         this.name = name;
@@ -17,11 +19,11 @@ public class Lesson {
         this.cab = cab;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -63,5 +65,18 @@ public class Lesson {
 
     public void setCab(String cab) {
         this.cab = cab;
+    }
+
+    @Override
+    public int compareTo(@NonNull Lesson lesson) {
+        if (position > lesson.position) {
+            return 1;
+        }
+        else if (position <  lesson.position) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
     }
 }
